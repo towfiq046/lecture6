@@ -2,7 +2,7 @@
 <html>
 	<head>
 			<script type="text/javascript">
-					// *** singlepage1 ***
+					// *** singlepage2 ***
 
 					// render contents of new page in main view.
 					document.addEventListener('DOMContentLoaded', () => {
@@ -18,8 +18,14 @@
 											return false;		// refresh problem.
 									}
 							});
-
 					});
+
+					// update state on poping state.
+					window.onpopstate = function(e) {	// pressing the back button.
+							const data = e.state;		// js obj. stores the title and contents.
+							document.title = data.title;	// changing the title which was pushed onto the stack.
+							document.querySelector('#body').innerHTML = data.text;	// getting text from the obj.
+					}
 
 					// used for loading page from server.
 					function load_page(name) {
@@ -30,11 +36,13 @@
 									const response = request.responseText;	// whatever came back by the request.
 									document.querySelector('#body').innerHTML = response;		// search for the body id and put the result there.
 
-									// *** singlepage1 *** problem: same url is not feasible.
+									// *** singlepag2 *** problem: going back or backspace doesn't change the contents.
 									// push state to url.
 									document.title = name;	// update title.
-									history.pushState(null, name, name);
-									// 1.any data assosiated^ with the url. 2.title. 3.url.
+									// using page info as stack.
+									// store info of the current page for going back or backspace.
+									history.pushState({'title': name, 'text': response}, name, name);	 // push to stack.
+									// 1.any data assosiated^ with the url.           2.title. 3.url.
 							}
 							request.send();
 					}
