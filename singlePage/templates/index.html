@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+			<script type="text/javascript">
+					// render contents of new page in main view.
+					document.addEventListener('DOMContentLoaded', () => {
+							// start by loading the first page.
+							// first page is already on display.
+							load_page('first');
+
+							// set links to load subsequent page.
+							document.querySelectorAll('.nav-link').forEach(link => {	// looping all the links. js array
+									link.onclick = () => {
+											//  just to load pages in this single page.
+											load_page(link.dataset.page);		// ***all the trouble for this line only.***
+											return false;		// refresh problem.
+									}
+							});
+
+					});
+
+					// used for loading page from server.
+					function load_page(name) {
+							// need to ask flask server for contents.
+							const request = new XMLHttpRequest();
+							request.open('GET', `/${name}`);	// route for get request ex: /first.
+							request.onload = () => {	// when request is done do this func.
+									const response = request.responseText;	// whatever came back by the request.
+									document.querySelector('#body').innerHTML = response;		// search for the body id and put the result there.
+							}
+							request.send();
+					}
+			</script>
+			<title>My Webpage</title>
+	</head>
+	<body>
+			<ul id="nav">
+					<!-- no link. data attribute can store info, here route is stored.-->
+					<li> <a href="" class="nav-link" data-Page="first">First Page</a> </li>
+					<li> <a href="" class="nav-link" data-Page="second">Second Page</a> </li>
+					<li> <a href="" class="nav-link" data-Page="third">Third Page</a> </li>
+
+			</ul>
+			<hr>
+			<div id="body">
+
+			</div>
+
+	</body>
+</html>
