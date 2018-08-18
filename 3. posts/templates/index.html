@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+				.post {
+						background-color: #77dd11;
+						padding: 20px;
+						margin: 10px;
+				}
+
+				body {
+						padding-bottom: 50px;
+				}
+		</style>
+			<script>
+
+					let counter = 1;	// first post
+					const quantity = 20;	// load 20 posts at a time.
+
+					document.addEventListener('DOMContentLoaded', load);	// simply calling the load fuction.
+
+					window.onscroll = () => {
+							if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {	// if reached at the bottom
+									load();
+							}
+					}
+
+					function load() {
+							const start = counter;	// ex: 1
+							const end = start + quantity - 1;		// ex: 1 + 20 - 1
+							counter = end + 1;	// 20 + 1
+
+							// request to get new posts.
+							const request = new XMLHttpRequest();
+							request.open('POST', '/posts');		// request type and path.
+							request.onload = () => {	// after finishing the request.
+									const data = JSON.parse(request.responseText)		// storing the response.
+									data.forEach(add_post);		// line 18 app.py.
+							}
+
+							// add start and endpoint to http request.
+							const data = new FormData();
+							data.append('start', start);
+							data.append('end', end);
+
+							request.send(data);
+					}
+
+					// basically making html code here.
+					// add a post with html contents in DOM.
+					function add_post(contents) {
+							const post = document.createElement('div');	// creating new div in DOM.
+							post.className = 'post';	// basically making html code here.
+							post.innerHTML = contents;
+
+							// add post to DOM.
+							document.querySelector('#posts').append(post);	// appending inside the div section.
+					};
+
+			</script>
+		<title>Posts0</title>
+	</head>
+	<body>
+			<div id="posts">
+
+			</div>
+
+	</body>
+</html>
